@@ -1,14 +1,17 @@
 services:
-  nginx:
-      image: nginx:alpine
-      restart: unless-stopped
-      ports:
-        - "80:80"
-      volumes:
-        - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      depends_on:
-        app:
-          condition: service_healthy
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
 
   app:
     build:
@@ -41,6 +44,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
   db:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -50,25 +54,15 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
 
   redis:
     image: redis:8-alpine
     restart: unless-stopped
     volumes:
       - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-      start_period: 10s
 
 volumes:
   pg_data:
   redis_data:
+  caddy_data:
+  caddy_config:

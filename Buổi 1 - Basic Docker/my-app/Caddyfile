@@ -1,0 +1,3 @@
+app.supaaggin.me {
+  reverse_proxy app:3000
+}
