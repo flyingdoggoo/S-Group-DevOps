@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Cloud Training</title>
+</head>
+
+<body>
+    <h1>Cloud Training — Frontend trên S3</h1>
+    <p>Trạng thái Backend: <span id="status">đang kiểm tra…</span></p>
+    <script src="config.js"></script>
+    <script>
+        // Thay thế bằng ECS public IP/URL của bạn sau Phần 2.4
+        const API_URL = window.API_URL || "http://localhost:3000";
+        fetch(`${API_URL}/health`)
+            .then((r) => r.json())
+            .then((d) => (document.getElementById("status").textContent = JSON.stringify(d)))
+            .catch((e) => (document.getElementById("status").textContent = "lỗi: " + e.message));
+    </script>
+</body>
+
+</html>

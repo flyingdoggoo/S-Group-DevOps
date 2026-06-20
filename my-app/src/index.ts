@@ -1,6 +1,8 @@
 import express from 'express';
-
+import cors from 'cors';
 const app = express();
+app.use(cors());
+
 const PORT = Number(process.env.PORT ?? 3000);
 let shuttingDown = false;
 
